@@ -9,6 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    private var user = User()
+    
     let textFieldOne: UITextField = {
        let tf = UITextField()
         tf.placeholder = "Имя"
@@ -47,15 +49,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        user = StorageManager.shared.getUser()
+        textLabel.text = user.name + " " + user.surname
         
-        view.backgroundColor = .lightText
+        view.backgroundColor = .systemCyan
         
         textFieldOne.frame = CGRect(x: view.bounds.size.width / 2  - 125, y: 300, width: 250, height: 40)
-        textFieldOne.addTarget(self, action: #selector(showLabel), for: .editingDidEndOnExit)
         view.addSubview(textFieldOne)
         
         textFieldTwo.frame = CGRect(x: view.bounds.size.width / 2  - 125, y: 360, width: 250, height: 40)
-        textFieldTwo.addTarget(self, action: #selector(showLabel), for: .editingDidEndOnExit)
         view.addSubview(textFieldTwo)
         
         textLabel.frame = CGRect(x: 0, y: 100, width: view.frame.size.width, height: 100)
@@ -67,17 +69,17 @@ class ViewController: UIViewController {
         view.addSubview(button)
         
     }
-
-    @objc func showLabel() {
-        
-        print(textFieldOne.text!)
-    }
     
     @objc func saveConfig() {
         guard let fistName = textFieldOne.text, fistName != "" else { return }
         guard let secondName = textFieldTwo.text, secondName != "" else { return }
         textLabel.text = fistName + " " + secondName
+        textFieldOne.text = nil
+        textFieldTwo.text = nil
         
+        user.name = fistName
+        user.surname = secondName
+        StorageManager.shared.saveUser(user)
     }
 }
 
